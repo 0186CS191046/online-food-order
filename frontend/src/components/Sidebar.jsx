@@ -50,6 +50,12 @@ const Sidebar = () => {
             icon: FaRegEdit,
             roles: ["Admin", "Restaurant", "User"],
         },
+        {
+            name: "Add Product",
+            path: "/dashboard/add-product",
+            icon: FaRegEdit,
+            roles: ["Restaurant"],
+        },
     ];
 
     const filteredMenuItems = menuItems.filter((item) =>

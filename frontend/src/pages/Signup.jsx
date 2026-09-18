@@ -34,7 +34,7 @@ const Signup = () => {
             })
             
             if (response.data.success) {
-                navigate("/login");
+                navigate("/");
                 toast.success(response.data.message)
             }
         } catch (error) {
@@ -93,7 +93,7 @@ const Signup = () => {
                     <CardFooter className="flex-col gap-2">
                         <Button type="submit" className="w-full cursor-pointer h-10 bg-green-600 hover:bg-green-500" onClick={handleSubmit}>
                              SignUp </Button>
-                        <p className="text-gray-700 text-sm">Already have an account ? <Link to="/login" className="hover:underline  cursor-pointer text-green-800">Login</Link></p>
+                        <p className="text-gray-700 text-sm">Already have an account ? <Link to="/" className="hover:underline  cursor-pointer text-green-800">Login</Link></p>
                     </CardFooter>
                 </Card>
             </div>

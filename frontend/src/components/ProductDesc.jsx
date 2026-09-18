@@ -7,8 +7,7 @@ import { useDispatch } from "react-redux";
 import { setCart } from "@/redux/productSlice";
 
 const ProductDesc = ({ product }) => {
-
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     const dispatch = useDispatch();
     const addToCart = async (productId) => {
         try {
@@ -38,7 +37,7 @@ const ProductDesc = ({ product }) => {
                 <p className="text-gray-800 font-semibold">Quantity :</p>
                 <Input type="number" className="w-14" defaultValue = {1}/>
             </div>
-            <Button onClick={()=>addToCart(product._id)} className="bg-green-600 w-max cursor-pointer ">Add to cart</Button>
+            <Button onClick={()=>addToCart(product._id)} className="bg-[#6D8196] w-max cursor-pointer ">Add to cart</Button>
         </div>
     )
 };

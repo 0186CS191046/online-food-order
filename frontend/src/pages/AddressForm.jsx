@@ -31,6 +31,26 @@ const AddressForm = () => {
     };
 
     const handleSave = () => {
+        const requiredFields = [
+            "fullName",
+            "phone",
+            "email",
+            "address",
+            "city",
+            "zipcode",
+            "state",
+            "country",
+        ];
+
+        const emptyField = requiredFields.find(
+            (field) => !formData[field].trim()
+        );
+
+        if (emptyField) {
+            toast.error("Please fill all the fields!");
+            return;
+        }
+
         dispatch(addAddress(formData));
         setShowForm(false)
     };
@@ -44,28 +64,138 @@ const AddressForm = () => {
 
     const handlePayment = async () => {
         try {
-            const token = localStorage.getItem("token")
-            const { data } = await axios.post(`${import.meta.env.VITE_URL}/api/v1/order`, {
+            const token = sessionStorage.getItem("token");
+
+            const payload = {
                 products: cart?.items?.map((item) => ({
                     productId: item.productId._id,
-                    quantity: item.quantity
+                    quantity: item.quantity,
                 })),
                 restaurantId: cart?.restaurantId,
-                tax, shipping, currency: "INR", amount: total
-            }, {
-                headers: {
-                    Authorization: `Bearer ${token}`
+                tax,
+                shipping,
+                currency: "INR",
+                amount: total,
+            };
+
+            const { data } = await axios.post(
+                `${import.meta.env.VITE_URL}/api/v1/orders`,
+                payload,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`,
+                    },
                 }
-            })
+            );
+
+            console.log("Order response:", data);
+
             if (!data.success) {
-                return toast.error(data.message)
+                toast.error(data.message);
+                return;
             }
-            navigate("/");
+
+            console.log("data", data);
+
+
+            const options = {
+                key: import.meta.env.VITE_RAZORPAY_KEY,
+
+                amount: data.order.amount,
+                currency: data.order.currency,
+
+                name: "Your Restaurant",
+                description: "Food Order",
+
+                order_id: data.order.razorpayOrderId,
+
+                handler: async function (response) {
+                    try {
+                        console.log("Razorpay response:", response);
+
+                        const verifyResponse = await axios.post(
+                            `${import.meta.env.VITE_URL}/api/v1/orders/payment/verify`,
+                            {
+                                razorpay_order_id:
+                                    response.razorpay_order_id,
+
+                                razorpay_payment_id:
+                                    response.razorpay_payment_id,
+
+                                razorpay_signature:
+                                    response.razorpay_signature,
+                            },
+                            {
+                                headers: {
+                                    Authorization: `Bearer ${token}`,
+                                },
+                            }
+                        );
+
+                        if (verifyResponse.data.success) {
+                            toast.success("Payment successful!");
+
+                            navigate("/dashboard/products");
+                        } else {
+                            toast.error("Payment verification failed");
+                        }
+                    } catch (error) {
+                        console.log(
+                            "Payment verification error:",
+                            error.response?.data || error.message
+                        );
+
+                        toast.error(
+                            "Payment verification failed"
+                        );
+                    }
+                },
+
+                modal: {
+                    ondismiss: function () {
+                        toast.info("Payment cancelled");
+                    },
+                },
+                theme: {
+                    color: "#16a34a",
+                },
+
+                prefill: {
+                    name: selectedAddress?.fullName,
+                    email: selectedAddress?.email,
+                    contact: selectedAddress?.phone,
+                },
+
+                theme: {
+                    color: "#16a34a",
+                },
+            };
+
+            const razorpay = new window.Razorpay(options);
+
+            razorpay.on("payment.failed", function (response) {
+                console.log("Razorpay payment failed:", response.error);
+
+                toast.error(
+                    response.error?.description ||
+                    "Payment failed. Please try another payment method."
+                );
+            });
+
+            razorpay.open();
+
         } catch (error) {
-            console.log("Error in handlePayment :", error.message);
-            toast.error("Something went wrong while processing payment!")
+            console.log(
+                "Error in handlePayment:",
+                error
+            );
+
+            toast.error(
+                error.response?.data?.message ||
+                "Something went wrong while processing payment!"
+            );
         }
-    }
+    };
 
     return (
         <div className="max-w-7xl mx-auto grid place-items-center p-10">

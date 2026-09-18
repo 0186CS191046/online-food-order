@@ -27,6 +27,21 @@ const userSchema = new Schema({
     },
     phone: {
         type: String
+    },
+    address: {
+        type: String
+    },
+    city: {
+        type: String
+    },
+    zipcode: {
+        type: Number
+    },
+    state: {
+        type: String
+    },
+    country: {
+        type: String
     }
 }, { timestamps: true })
 

@@ -10,9 +10,7 @@ const Restaurants = () => {
 
     const getAllRestaurants = async () => {
         try {
-            const res = await axios.get(
-                `${import.meta.env.VITE_URL}/api/v1/restaurant/all`,
-                {
+            const res = await axios.get(`${import.meta.env.VITE_URL}/api/v1/restaurant/all`,{
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -24,10 +22,7 @@ const Restaurants = () => {
             }
         } catch (error) {
             console.log("Error in get all restaurants:", error.message);
-
-            toast.error(
-                error.response?.data?.message || "Failed to fetch restaurants"
-            );
+            toast.error( error.response?.data?.message || "Failed to fetch restaurants" );
         }
     };
 
@@ -36,13 +31,8 @@ const Restaurants = () => {
     }, []);
 
     return (
-        <div className="pt-20 min-h-screen">
+        <div className="min-h-screen">
             <div className="flex">
-
-                {/* Sidebar */}
-                <Sidebar />
-
-                {/* Main Content */}
                 <div className="flex-1 min-w-0 p-2">
                      <FiltersideBar allProducts={restaurants} setCategory={"hyy"} category={"jj"} search={"jj"} setSearch={"jj"} />
 

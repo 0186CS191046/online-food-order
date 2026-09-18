@@ -1,113 +1,171 @@
 import React from "react";
-import { Button } from "./components/ui/button";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+
 import Navbar from "./components/Navbar";
+import Footer from "./components/Footer";
+import ProtectedRoutes from "./components/ProtectedRoutes";
+
 import Signup from "./pages/Signup";
 import Signin from "./pages/Signin";
 import Profile from "./pages/Profiles";
-import Footer from "./components/Footer";
-import Products from "./pages/Products";
-import Cart from "./pages/Cart";
+
 import Dashboard from "./pages/Dashboard";
-import AdminProducts from "./pages/admin/AdminProduct";
-import AddProduct from "./pages/admin/AddProduct";
-import AdminOrders from "./pages/admin/AdminOrders";
-import AdminUsers from "./pages/admin/AdminUsers";
-import ShowUserOrders from "./pages/admin/ShowUserOrders";
-import UserInfo from "./pages/admin/UserInfo";
-import ProtectedRoutes from "./components/ProtectedRoutes";
-import SingleProduct from "./pages/SingleProduct";
-import AddressForm from "./pages/AddressForm";
-import OrderSucces from "./pages/OrderSuccess";
+import Products from "./pages/Products";
 import Users from "./pages/Users";
 import Restaurants from "./pages/Restaurant";
-import AdminSignin from "./pages/admin/AdminLogin";
+import Order from "./pages/Order";
+
+import Cart from "./pages/Cart";
+import AddressForm from "./pages/AddressForm";
+import OrderSucces from "./pages/OrderSuccess";
+import AddProduct from "./pages/admin/AddProduct";
+import SingleProduct from "./pages/SingleProduct";
 
 const router = createBrowserRouter([
+  // =========================
+  // AUTH
+  // =========================
+
   {
     path: "/",
-    element: <> <Signin /></>
+    element: <Signin />,
   },
+
   {
     path: "/signup",
-    element: <><Signup /></>
+    element: <Signup />,
   },
+
+  // =========================
+  // DASHBOARD
+  // =========================
+
   {
     path: "/dashboard",
-    element: <><Navbar /> <Dashboard /> <Footer /></>
-  },
-  {
-    path: "/profile/:id",
-    element: <><ProtectedRoutes ><Navbar /><Profile /></ProtectedRoutes></>
-  },
-  {
-    path: "/dashboard/products",
-    element: <><Navbar /><Products /></>
-  },
-  {
-    path: "/dashboard/users",
-    element: <><Navbar /> <Users /> <Footer /></>
-  },
-  {
-    path: "/dashboard/restaurants",
-    element: <><Navbar /> <Restaurants /> <Footer /></>
-  },
-  {
-    path: "/products/:id",
-    element: <><Navbar /><SingleProduct /></>
-  },
-  {
-    path: "/cart",
-    element: <><ProtectedRoutes><Navbar /><Cart /></ProtectedRoutes></>
-  },
-  {
-    path: "/order-success",
-    element: <><ProtectedRoutes><OrderSucces /></ProtectedRoutes></>
-  },
-  {
-    path: "/address",
-    element: <><ProtectedRoutes><AddressForm /></ProtectedRoutes></>
-  },
-  {
-    path: "/dashboard",
-    element: <></>,
+    element: (
+      <ProtectedRoutes>
+        <>
+          <Navbar />
+          <Dashboard />
+          <Footer />
+        </>
+      </ProtectedRoutes>
+    ),
+
     children: [
       {
-        path: "add-product",
-        element: <AddProduct />
+        index: true,
+        element: <></>,
       },
+
       {
         path: "products",
-        element: <><AdminProducts /></>
+        element: <Products />,
       },
       {
-        path: "orders",
-        element: <><AdminOrders /></>
+        path: "product/:id",
+        element: <SingleProduct />,
       },
       {
         path: "users",
-        element: <><AdminUsers /></>
+        element: <Users />,
       },
+
       {
-        path: "users/:id",
-        element: <><UserInfo /></>
+        path: "restaurants",
+        element: <Restaurants />,
       },
+
       {
-        path: "users/orders/:userId",
-        element: <><ShowUserOrders /></>
-      }
-    ]
+        path: "orders",
+        element: <Order />,
+      },
 
+      {
+        path: "profile/:id",
+        element: <Profile />,
+      },
+       {
+        path: "add-product",
+        element: <AddProduct />,
+      },
 
-  }
-])
+    ],
+  },
+
+  // =========================
+  // PROFILE
+  // =========================
+
+  {
+    path: "/profile",
+    element: (
+      <ProtectedRoutes>
+        <>
+          <Navbar />
+          <Profile />
+        </>
+      </ProtectedRoutes>
+    ),
+  },
+
+  {
+    path: "/profile/:id",
+    element: (
+      <ProtectedRoutes>
+        <>
+          <Navbar />
+          <Profile />
+        </>
+      </ProtectedRoutes>
+    ),
+  },
+
+  // =========================
+  // CART
+  // =========================
+
+  {
+    path: "/cart",
+    element: (
+      <ProtectedRoutes>
+        <>
+          <Navbar />
+          <Cart />
+        </>
+      </ProtectedRoutes>
+    ),
+  },
+
+  // =========================
+  // ADDRESS
+  // =========================
+
+  {
+    path: "/address",
+    element: (
+      <ProtectedRoutes>
+        <AddressForm />
+      </ProtectedRoutes>
+    ),
+  },
+
+  // =========================
+  // ORDER SUCCESS
+  // =========================
+
+  {
+    path: "/order-success",
+    element: (
+      <ProtectedRoutes>
+        <OrderSucces />
+      </ProtectedRoutes>
+    ),
+  },
+]);
 
 const App = () => {
-  return (
-    <>
-      <RouterProvider router={router} />
-    </>
-  )
-}
+  return <RouterProvider router={router} />;
+};
 
 export default App;

@@ -11,6 +11,10 @@ const orderSchema = new Schema({
         ref: "Restaurant",
         required: true
     },
+    orderId: {
+        type: String,
+        required: true
+    },
     products: [
         {
             productId:
@@ -48,11 +52,34 @@ const orderSchema = new Schema({
         required: true,
         default: "INR"
     },
+    paymentStatus: {
+        type: String,
+        enum : ["Prepaid", "Cod","Refund"],
+    },
     status: {
         type: String,
-        enum: ["Pending", "Paid", "Failed"],
+        enum: ["Pending", "Confirmed", "Preparing", "Ready", "Out for Delivery", "Delivered", "Cancelled"],
         default: "Pending"
     },
+    // payment fields
+    paymentMethod: {
+            type: String,
+            enum: ["COD", "RAZORPAY"],
+            required: true,
+        },
+
+        paymentStatus: {
+            type: String,
+            enum: [
+                "Pending",
+                "Paid",
+                "Failed",
+                "Refunded",
+                "Partially Refunded",
+            ],
+            default: "Pending",
+        },
+        
     // razorpay fields
     razorpayOrderId: {
         type: String

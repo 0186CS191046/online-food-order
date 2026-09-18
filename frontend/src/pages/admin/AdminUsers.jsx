@@ -15,7 +15,7 @@ const AdminUsers = () => {
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
-    const token = localStorage.getItem("token")
+    const token = sessionStorage.getItem("token")
     const fetchUsers = async () => {
         try {
             const res = await axios.get(`${import.meta.env.VITE_URL}/api/v1/users`, {

@@ -6,7 +6,7 @@ import { toast } from "sonner";
 const AdminOrders = () => {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
 
     useEffect(() => {
         const fetchOrders = async () => {

@@ -4,6 +4,7 @@ import bcrypt from "bcrypt";
 import config from "../config/index.js";
 import { errorResponse, successResponse } from "../utils/response.js";
 import { staticMessages, STATUS_CODE, USERTYPE } from "../utils/constant.js"
+import Restaurant from "../models/restaurants.js";
 
 export const register = async (req, res) => {
     try {
@@ -22,7 +23,6 @@ export const register = async (req, res) => {
 
         const hashPass = await bcrypt.hash(password, 10);
         const newUser = await User.create({ firstName, lastName, email, password: hashPass, role: userRole });
-
         await newUser.save();
         return res.status(STATUS_CODE.CREATED).json(successResponse(STATUS_CODE.CREATED, staticMessages.USER_CREATE))
     } catch (error) {
@@ -46,11 +46,11 @@ export const login = async (req, res) => {
 
         const isMatch = await bcrypt.compare(password, user.password);
         if (!isMatch) {
-            return res.status(STATUS_CODE.BAD_REQUEST).json(errorResponse(STATUS_CODE.BAD_REQUEST, staticMessages.PASSWORD_DID_NOT_MATCH))
+            return res.status(STATUS_CODE.BAD_REQUEST).json(errorResponse(STATUS_CODE.BAD_REQUEST, staticMessages.INCORRECT_PASSWORD))
         }
 
-        const accessToken = jwt.sign( { id: user._id, email, role:user.role }, config.jwt_secret_key, { expiresIn: "1d" });
-        const refreshToken = jwt.sign( { id: user._id, email, role:user.role }, config.refresh_secret_key, { expiresIn: "7d" });
+        const accessToken = jwt.sign( { id: user._id, firstName:user.firstName ,email, role:user.role }, config.jwt_secret_key, { expiresIn: "1d" });
+        const refreshToken = jwt.sign( { id: user._id, firstName:user.firstName, email, role:user.role }, config.refresh_secret_key, { expiresIn: "7d" });
 
         res.cookie('refreshToken', refreshToken, { httpOnly: true, secure: false, sameSite: "Lax" });
         return res.status(STATUS_CODE.SUCCESS).json(successResponse(STATUS_CODE.SUCCESS, staticMessages.LOGIN_SUCCESS, { accessToken, refreshToken }))

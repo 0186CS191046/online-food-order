@@ -21,7 +21,7 @@ const staticMessages =  {
     INTERNAL_SERVER_ERROR : "Internal Server Error!",
     MISSING_REQUIRED_FIELDS : "Missing requied fields!",
     ROUTE_NOT_FOUND : "Route not exists!",
-    PASSWORD_DID_NOT_MATCH : "Password didn't match",
+    INCORRECT_PASSWORD : "Incorrect Password!",
     LOGIN_SUCCESS : "Login successfully!",
     LOGOUT_SUCCESS : "Logout successfully!",
     FOUND : "Data fetched successfully!",
@@ -47,7 +47,14 @@ const staticMessages =  {
     CART_ITEM : "You can add items from only one restaurant at a time!",
     CART_TYPE : "Type must be either increase or decrease!",
     ITEM_NOT_FOUND : "Item not found in cart!" ,
-    PRODUCT_REMOVED : "Product removed from cart successfully!"
+    PRODUCT_REMOVED : "Product removed from cart successfully!",
+
+    VALID_AMOUNT : "Valid amount required!",
+    ORDER_CREATE : "Order created successfully!",
+    ORDER_CANNOT_CANCEL : "Order cannot be cancelled when status is ${order.status}!",
+    INVALID_STATUS : "Invalid order status!",
+    ORDER_CANCEL : "Order cancelled successfully",
+    ORDER_UPDATE : "Order updated successfully!"
 }
 
 export {STATUS_CODE,staticMessages,USERTYPE}

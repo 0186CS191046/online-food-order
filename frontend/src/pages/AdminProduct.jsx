@@ -60,7 +60,7 @@ const AdminProducts = () => {
             [name]: value
         }))
     };
-    const token = localStorage.getItem("token")
+    const token = sessionStorage.getItem("token")
 
     const handleSave = async (e) => {
         e.preventDefault();

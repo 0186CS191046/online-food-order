@@ -1,15 +1,16 @@
 import express from "express";
-import { isAuthenticate ,isAdmin, isUser} from "../middlewares/auth.js";
-import { createOrder, getAllOrdersAdmin, getMyOrders, getSalesData, getUserOrders } from "../controllers/orderController.js";
+import { isAuthenticate, isAdmin, isUser, isRestaurantUser } from "../middlewares/auth.js";
+import { cancelOrder, createOrder, getAllOrdersAdmin, getMyOrders, getOrderById, getUserOrders, updateOrderStatus, getRestaurantOrders, verifyPayment } from "../controllers/orderController.js";
 const router = express.Router();
 
-// For users
-router.post("/", isAuthenticate, createOrder);
-router.get("/",isAuthenticate,getMyOrders);
-
-// For admin
-router.get("/user-order/:userId",isAuthenticate,isAdmin,getUserOrders);
-router.get("/all",isAuthenticate, isAdmin, getAllOrdersAdmin);
-router.get("/sales-data",isAuthenticate,isAdmin,getSalesData);
+router.get("/restaurant", isAuthenticate, isRestaurantUser, getRestaurantOrders);
+router.post("/", isAuthenticate, isUser, createOrder);
+router.post("/payment/verify", isAuthenticate, verifyPayment);
+router.get("/my-orders", isAuthenticate, isUser, getMyOrders);
+router.get("/:orderId", isAuthenticate, getOrderById);
+router.patch("/:orderId/cancel", isAuthenticate, isUser, cancelOrder);
+router.get("/admin/all", isAuthenticate, isAdmin, getAllOrdersAdmin);
+router.get("/admin/user/:userId", isAuthenticate, isAdmin, getUserOrders);
+router.patch("/:orderId/status", isAuthenticate, isRestaurantUser, updateOrderStatus);
 
 export default router;

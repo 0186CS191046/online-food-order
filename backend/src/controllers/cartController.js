@@ -120,7 +120,7 @@ export const updateCartQuantity = async (req, res) => {
             .populate("items.productId")
             .populate("restaurantId");
 
-        return res.status(STATUS_CODE.SUCCESS).json(successResponse(STATUS_CODE.SUCCESS, staticMessages.CART_UPDATE))
+        return res.status(STATUS_CODE.SUCCESS).json(successResponse(STATUS_CODE.SUCCESS, staticMessages.CART_UPDATE, {cart : populatedCart}))
     } catch (error) {
         console.log("Error in updateCartQuantity:", error.message);
         return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json(errorResponse(STATUS_CODE.INTERNAL_SERVER_ERROR, staticMessages.INTERNAL_SERVER_ERROR));
