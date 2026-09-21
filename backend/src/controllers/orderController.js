@@ -102,8 +102,6 @@ export const verifyPayment = async (req, res) => {
 
 export const getMyOrders = async (req, res) => {
     try {
-        console.log("+++++++++++++++++");
-
         const userId = req.authUser.id;
         if (!userId) {
             return res.status(STATUS_CODE.NOT_AUTHORIZED).json(errorResponse(STATUS_CODE.NOT_AUTHORIZED, staticMessages.NOT_AUTHORIZED));
@@ -141,7 +139,6 @@ export const getOrderById = async (req, res) => {
     }
 };
 
-// ========================================== // ADMIN: GET ORDERS OF A USER // ========================================== 
 export const getUserOrders = async (req, res) => {
     try {
         const { userId } = req.params;
@@ -166,11 +163,9 @@ export const getAllOrdersAdmin = async (req, res) => {
             .select("_id orderId userId restaurantId products amount currency status createdAt")
             .populate({ path: "restaurantId", select: "restaurantName" })
             .populate({ path: "userId", select: "firstName lastName email" })
-            // .populate({ path: "restaurantId", select: "restaurantName" })
             .populate({ path: "products._id", select: "productName price -_id" });
 
         return res.status(STATUS_CODE.SUCCESS).json(successResponse(STATUS_CODE.SUCCESS, staticMessages.FOUND, { count: orders.length, orders }));
-
     } catch (error) {
         console.error("Error fetching all orders:", error);
         return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json(errorResponse(STATUS_CODE.INTERNAL_SERVER_ERROR, staticMessages.INTERNAL_SERVER_ERROR));
