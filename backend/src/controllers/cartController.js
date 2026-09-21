@@ -12,7 +12,7 @@ export const getAllCarts = async (req, res) => {
             .populate("restaurantId");
 
         if (!cart) {
-            return res.status(STATUS_CODE.NOT_FOUND).json(errorResponse(STATUS_CODE.NOT_FOUND, staticMessages.NOT_FOUND));
+            return res.status(STATUS_CODE.SUCCESS).json(successResponse(STATUS_CODE.NOT_FOUND, staticMessages.FOUND, []));
         }
         return res.status(STATUS_CODE.SUCCESS).json(successResponse(STATUS_CODE.SUCCESS, staticMessages.FOUND, { cart }));
     } catch (error) {
@@ -76,7 +76,7 @@ export const addToCart = async (req, res) => {
             .populate("items.productId")
             .populate("restaurantId");
 
-        return res.status(STATUS_CODE.SUCCESS).json(successResponse(STATUS_CODE.SUCCESS, staticMessages.CART_ADD))
+        return res.status(STATUS_CODE.SUCCESS).json(successResponse(STATUS_CODE.SUCCESS, staticMessages.CART_ADD, {cart : populatedCart}))
     } catch (error) {
         console.log("Error in addToCart:", error.message);
         return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json(errorResponse(STATUS_CODE.INTERNAL_SERVER_ERROR, staticMessages.INTERNAL_SERVER_ERROR));

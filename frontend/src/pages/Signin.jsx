@@ -15,6 +15,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import { useDispatch } from "react-redux";
 import { setUser } from "../redux/userSlice";
+import { jwtDecode } from "jwt-decode";
 
 const Signin = () => {
     const [showPassword, setShowPassword] = useState(false);
@@ -63,8 +64,8 @@ const Signin = () => {
             );
 
             if (response.data.success) {
-                dispatch(setUser(response.data.user));
-
+                const user = jwtDecode(response.data.accessToken);
+                dispatch(setUser(user));
                 sessionStorage.setItem(
                     "token",
                     response.data.accessToken
@@ -182,17 +183,15 @@ const Signin = () => {
                                 SignUp
                             </Link>
                         </p>
-<p className="text-gray-700 text-sm">
-    Have you forgotten your password?{" "}
-    <Link
-        to="/forgot-password"
-        className="hover:underline cursor-pointer text-green-800"
-    >
-        Forgot Password
-    </Link>
-</p>
-
-
+                        <p className="text-gray-700 text-sm">
+                            Have you forgotten your password?{" "}
+                            <Link
+                                to="/forgot-password"
+                                className="hover:underline cursor-pointer text-green-800"
+                            >
+                                Forgot Password
+                            </Link>
+                        </p>
                     </CardFooter>
                 </form>
             </Card>

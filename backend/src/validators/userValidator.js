@@ -1,6 +1,7 @@
 import Joi from "joi";
 
 const putUser = Joi.object({
+    userId : Joi.string().required(),
     firstName: Joi.string().optional(),
     lastName: Joi.string().optional(),
     email: Joi.string().optional(),
@@ -8,7 +9,7 @@ const putUser = Joi.object({
     profilePic: Joi.string().optional().allow(""),
     address: Joi.string().optional().allow(""),
     city: Joi.string().optional().allow(""),
-    zipCode: Joi.string().optional().allow("")
+    zipCode: Joi.number().optional().allow("")
 }, "req.body");
 
 

@@ -2,7 +2,7 @@ import { LayoutDashboard, PackagePlus, PackageSearch, Users } from "lucide-react
 import React from "react";
 import { NavLink, useLocation } from "react-router-dom";
 import { FaRegEdit } from "react-icons/fa";
-import { jwtDecode } from "jwt-decode";
+import { useSelector } from "react-redux";
 
 const Sidebar = () => {
     const token = sessionStorage.getItem("token");
@@ -12,8 +12,8 @@ const Sidebar = () => {
 
     if (token) {
         try {
-            const decodedToken = jwtDecode(token);
-            role = decodedToken?.role;
+            const {user} = useSelector((store)=>store.user)
+            role = user.role;
         } catch (error) {
             console.error("Invalid token:", error);
         }

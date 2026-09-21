@@ -8,7 +8,7 @@ const router = express.Router();
 
 
 router.get("/all",isAuthenticate, isAdmin, getAllUsers);
-router.get("/:id", isAuthenticate, isAdmin, getUserById);
+router.get("/:id", isAuthenticate, getUserById);
 router.get("/", isAuthenticate, getSelfUser);
 router.put("/", validate(putUser) , isAuthenticate, updateUser);
 

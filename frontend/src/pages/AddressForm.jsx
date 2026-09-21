@@ -71,6 +71,7 @@ const AddressForm = () => {
                     productId: item.productId._id,
                     quantity: item.quantity,
                 })),
+                paymentMethod : "RAZORPAY",
                 restaurantId: cart?.restaurantId,
                 tax,
                 shipping,

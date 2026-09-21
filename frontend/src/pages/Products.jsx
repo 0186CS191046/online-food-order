@@ -1,27 +1,21 @@
 import ProductCard from "../components/ProductCard";
 import React, { useEffect, useState } from "react";
 import { useMemo } from "react";
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "../components/ui/select";
 import FiltersideBar from "../components/FiltersideBar"
 import axios from "axios";
 import { toast } from "sonner";
 import { useDispatch, useSelector } from "react-redux";
 import { setProducts } from "../redux/productSlice";
-import Sidebar from "@/components/Sidebar";
+import { useNavigate } from "react-router-dom";
 
 const Products = () => {
     const [allProducts, setAllProducts] = useState([]);
     const [search, setSearch] = useState("");
     const [category, setCategory] = useState("All");
+    const navigate = useNavigate();
 
     const dispatch = useDispatch();
+    const {user} = useSelector((store)=>store.user);
     const token = sessionStorage.getItem("token");
 
     const getAllProducts = async () => {
@@ -84,6 +78,8 @@ const Products = () => {
         <div className="min-h-screen">
             <div className="flex">
                 <div className="flex-1 min-w-0">
+
+                    {/* Filter section */}
                     <FiltersideBar
                         type="products"
                         allProducts={allProducts}
@@ -93,11 +89,30 @@ const Products = () => {
                         setCategory={setCategory}
                     />
 
+                    {/* Add Product button - outside filter */}
+                    {(user.role == "Restaurant") && (<div className="flex justify-end px-10 mt-4">
+                        <button
+                            className="bg-[#6D8196] text-white px-5 py-2 rounded-md hover:bg-[4A4A4A] cursor-pointer"
+                         onClick={()=> navigate("/dashboard/add-product")}>
+                            Add Product
+                        </button>
+                    </div>)}
+
+                    {/* Products */}
                     <div className="p-10">
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-7">
-                            {filteredProducts.length > 0 ? (filteredProducts.map((product) => (
-                                <ProductCard key={product._id} product={product} />
-                            ))): <h2 className="text-center"> No Products found</h2>}
+                            {filteredProducts.length > 0 ? (
+                                filteredProducts.map((product) => (
+                                    <ProductCard
+                                        key={product._id}
+                                        product={product}
+                                    />
+                                ))
+                            ) : (
+                                <h2 className="text-center col-span-full">
+                                    No Products found
+                                </h2>
+                            )}
                         </div>
                     </div>
 

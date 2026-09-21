@@ -495,7 +495,7 @@ const handleImage = async (e) => {
 
                         <Button
                             type="submit"
-                            className="bg-[#6D8196] px-8"
+                            className="bg-[#6D8196] px-8 cursor-pointer"
                         >
                             Add Restaurant
                         </Button>

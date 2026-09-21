@@ -250,3 +250,4 @@ export const getRestaurantOrders = async (req, res) => {
         return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json(errorResponse(STATUS_CODE.INTERNAL_SERVER_ERROR, staticMessages.INTERNAL_SERVER_ERROR));
     }
 };
+

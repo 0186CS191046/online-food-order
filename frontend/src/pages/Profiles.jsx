@@ -14,9 +14,11 @@ import { toast } from "sonner";
 import axios from "axios";
 import { setUser } from "../redux/userSlice";
 import MyOrder from "./Order";
+import { Edit2 } from "lucide-react";
 
 const Profile = () => {
     const { id: userId } = useParams();
+    const [updateBtn, setUpdateBtn] = useState(false);
 
     const dispatch = useDispatch();
 
@@ -33,7 +35,7 @@ const Profile = () => {
         phone: "",
         address: "",
         city: "",
-        zipCode: "",
+        zipCode: null,
         profilePic: "",
     });
 
@@ -81,10 +83,7 @@ const Profile = () => {
                     phone: userData.phone || "",
                     address: userData.address || "",
                     city: userData.city || "",
-                    zipCode:
-                        userData.zipCode ||
-                        userData.zipcode ||
-                        "",
+                    zipCode: userData.zipCode || null,
                     profilePic: userData.profilePic || "",
                 });
             } else {
@@ -100,7 +99,7 @@ const Profile = () => {
 
             toast.error(
                 error.response?.data?.message ||
-                    "Failed to fetch user profile"
+                "Failed to fetch user profile"
             );
         } finally {
             setIsLoading(false);
@@ -129,6 +128,9 @@ const Profile = () => {
     /*
      * Upload profile image to Cloudinary
      */
+
+    console.log("loggedInUser.id == profileUser._id ",loggedInUser, profileUser );
+    
     const handleFileChange = async (e) => {
         const selectedFile = e.target.files?.[0];
 
@@ -196,7 +198,7 @@ const Profile = () => {
 
             toast.error(
                 error.response?.data?.error?.message ||
-                    "Image upload failed"
+                "Image upload failed"
             );
         } finally {
             setIsUploading(false);
@@ -241,7 +243,7 @@ const Profile = () => {
                 phone: updateUser.phone,
                 address: updateUser.address,
                 city: updateUser.city,
-                zipCode: updateUser.zipCode,
+                zipCode: updateUser.zipCode || null,
                 profilePic: updateUser.profilePic,
                 userId: userId,
             };
@@ -267,7 +269,7 @@ const Profile = () => {
             if (resp.data.success) {
                 toast.success(
                     resp.data.message ||
-                        "Profile updated successfully"
+                    "Profile updated successfully"
                 );
 
                 /*
@@ -288,10 +290,7 @@ const Profile = () => {
                     phone: updatedUser.phone || "",
                     address: updatedUser.address || "",
                     city: updatedUser.city || "",
-                    zipCode:
-                        updatedUser.zipCode ||
-                        updatedUser.zipcode ||
-                        "",
+                    zipCode: updatedUser.zipCode || null,
                     profilePic:
                         updatedUser.profilePic || "",
                 });
@@ -315,7 +314,7 @@ const Profile = () => {
 
             toast.error(
                 error.response?.data?.message ||
-                    "Failed to update profile"
+                "Failed to update profile"
             );
         } finally {
             setIsUpdating(false);
@@ -367,9 +366,19 @@ const Profile = () => {
                 {/* ================= PROFILE ================= */}
                 <TabsContent value="profile">
                     <div className="flex flex-col justify-center items-center bg-gray-100">
-                        <h1 className="font-bold mb-7 text-2xl text-gray-800">
-                            Update Profile
-                        </h1>
+                        <div className="flex items-center justify-center gap-2 mb-7">
+                            <h1 className="font-bold text-2xl text-gray-800">
+                                {updateBtn ? "Update Profile" : "Profile"}
+                            </h1>
+
+                            {(loggedInUser._id == profileUser._id )&& (<button
+                                onClick={() => setUpdateBtn(!updateBtn)}
+                                className="cursor-pointer"
+                            >
+                                <Edit2 size={18} />
+                            </button>)}
+                        </div>
+
 
                         <div className="w-full flex gap-10 justify-between items-start px-7 max-w-2xl">
                             {/* Profile Picture */}
@@ -380,12 +389,12 @@ const Profile = () => {
                                         userImg
                                     }
                                     alt="Profile"
-                                    className="w-32 h-32 rounded-full object-cover border-4 border-green-800"
+                                    className="w-32 h-32 rounded-full object-cover border-4 border-[#6D8196]"
                                 />
 
                                 <Label
                                     htmlFor="profile"
-                                    className="mt-4 cursor-pointer bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700"
+                                    className="mt-4 cursor-pointer bg-[#6D8196] text-white px-4 py-2 rounded-lg hover:bg-[#4A4A4A"
                                 >
                                     {isUploading
                                         ? "Uploading..."
@@ -556,18 +565,18 @@ const Profile = () => {
                                     </div>
 
                                     {/* Submit */}
-                                    <Button
+                                    {updateBtn && (<Button
                                         type="submit"
                                         disabled={
                                             isUploading ||
                                             isUpdating
                                         }
-                                        className="w-full mt-4 bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed"
+                                        className="w-full mt-4 bg-[#6D8196] hover:bg-[#4A4A4A] text-white font-semibold py-2 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"
                                     >
                                         {isUpdating
                                             ? "Updating..."
                                             : "Update Profile"}
-                                    </Button>
+                                    </Button>)}
                                 </form>
                             </div>
                         </div>

@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import FiltersideBar from "@/components/FiltersideBar";
-import { jwtDecode } from "jwt-decode";
 import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
 
 const Restaurants = () => {
     const [restaurants, setRestaurants] = useState([]);
@@ -12,15 +12,7 @@ const Restaurants = () => {
     const token = sessionStorage.getItem("token");
     const navigate = useNavigate();
 
-    let user = null;
-
-    if (token) {
-        try {
-            user = jwtDecode(token);
-        } catch (error) {
-            console.error("Invalid token:", error);
-        }
-    }
+    const { user } = useSelector((store) => store.user)
 
     const getRestaurants = async () => {
         try {

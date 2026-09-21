@@ -4,52 +4,15 @@ import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { FaArrowLeft } from "react-icons/fa";
 
-const FiltersideBar = ({
-    type = "products",
-
-    // Common
-    search,
-    setSearch,
-
-    // Products
-    allProducts = [],
-    category,
-    setCategory,
-
-    // Orders
-    status,
-    setStatus,
-    startDate,
-    setStartDate,
-    endDate,
-    setEndDate,
-}) => {
-
-    // ==========================================
-    // PRODUCT CATEGORIES
-    // ==========================================
-
-    const categories = allProducts
-        .map((product) => product?.category)
-        .filter(Boolean);
-
-    const uniqueCategory = [
-        "All",
-        ...new Set(categories),
-    ];
-
-
-    // ==========================================
-    // RESET FILTERS
-    // ==========================================
+const FiltersideBar = ({ type = "products", search, setSearch, allProducts = [], category, setCategory, status, setStatus, startDate, setStartDate, endDate, setEndDate }) => {
+    const categories = allProducts.map((product) => product?.category) .filter(Boolean);
+    const uniqueCategory = ["All",...new Set(categories),];
 
     const resetFilters = () => {
         setSearch?.("");
-
         if (type === "products") {
             setCategory?.("All");
         }
-
         if (type === "orders") {
             setStatus?.("All");
             setStartDate?.("");
@@ -57,26 +20,13 @@ const FiltersideBar = ({
         }
     };
 
-
     return (
         <div className="bg-gray-100 p-4 rounded-md w-full flex items-center justify-center gap-6 flex-wrap">
-
-            {/* ==========================================
-                GO BACK - ALWAYS SHOW
-            ========================================== */}
-
-            <button
-                onClick={() => window.history.back()}
-                className="flex items-center gap-2 text-base cursor-pointer bg-transparent border-none"
-            >
+            <button onClick={() => window.history.back()}
+                className="flex items-center gap-2 text-base cursor-pointer bg-transparent border-none" >
                 <FaArrowLeft />
                 Go Back
             </button>
-
-
-            {/* ==========================================
-                SEARCH - PRODUCTS / ORDERS / USERS
-            ========================================== */}
 
             <Input
                 type="text"
@@ -88,17 +38,11 @@ const FiltersideBar = ({
                     type === "users"
                         ? "Search users..."
                         : type === "orders"
-                        ? "Search orders..."
-                        : "Search products..."
+                            ? "Search orders..."
+                            : "Search products..."
                 }
                 className="bg-white p-2 rounded-md border-gray-400 border-2 w-64"
             />
-
-
-            {/* ==========================================
-                PRODUCTS
-                SEARCH + CATEGORY
-            ========================================== */}
 
             {type === "products" && (
                 <div className="flex items-center gap-4 flex-wrap">
@@ -126,7 +70,6 @@ const FiltersideBar = ({
                                         }
                                         className="cursor-pointer"
                                     />
-
                                     <label>
                                         {item}
                                     </label>
@@ -137,15 +80,8 @@ const FiltersideBar = ({
                 </div>
             )}
 
-
-            {/* ==========================================
-                ORDERS
-                SEARCH + STATUS + DATE
-            ========================================== */}
-
             {type === "orders" && (
                 <>
-                    {/* Status */}
                     <div className="flex items-center gap-3">
                         <label className="font-semibold">
                             Status:
@@ -194,13 +130,10 @@ const FiltersideBar = ({
                         </select>
                     </div>
 
-
-                    {/* Start Date */}
                     <div className="flex items-center gap-2">
                         <label className="font-semibold">
                             From:
                         </label>
-
                         <Input
                             type="date"
                             value={startDate || ""}
@@ -213,13 +146,10 @@ const FiltersideBar = ({
                         />
                     </div>
 
-
-                    {/* End Date */}
                     <div className="flex items-center gap-2">
                         <label className="font-semibold">
                             To:
                         </label>
-
                         <Input
                             type="date"
                             value={endDate || ""}
@@ -234,24 +164,12 @@ const FiltersideBar = ({
                 </>
             )}
 
-
-            {/* ==========================================
-                USERS
-                SEARCH ONLY
-            ========================================== */}
-
-
-            {/* ==========================================
-                RESET
-            ========================================== */}
-
             <Button
                 onClick={resetFilters}
                 className="bg-[#6D8196] text-white cursor-pointer"
             >
                 Reset Filters
             </Button>
-
         </div>
     );
 };

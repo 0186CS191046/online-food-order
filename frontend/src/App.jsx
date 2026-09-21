@@ -19,7 +19,7 @@ import Order from "./pages/Order";
 import Cart from "./pages/Cart";
 import AddressForm from "./pages/AddressForm";
 import OrderSucces from "./pages/OrderSuccess";
-import AddProduct from "./pages/admin/AddProduct";
+import AddProduct from "./pages/AddProduct";
 import SingleProduct from "./pages/SingleProduct";
 import AddRestaurant from "./pages/AddRestaurant";
 import ForgotPassword from "./pages/ForgotPassword";

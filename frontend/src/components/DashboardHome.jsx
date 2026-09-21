@@ -2,19 +2,8 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
-
-import {
-    Users,
-    Store,
-    Package,
-    ShoppingBag,
-    IndianRupee,
-    Clock,
-    CheckCircle,
-    ShoppingCart,
-    Plus,
-    ArrowRight,
-} from "lucide-react";
+import { Users, Store, Package, ShoppingBag, IndianRupee, Clock, CheckCircle, ShoppingCart,
+    Plus,ArrowRight } from "lucide-react";
 
 const DashboardHome = () => {
     const navigate = useNavigate();
@@ -22,17 +11,10 @@ const DashboardHome = () => {
     const [dashboardData, setDashboardData] = useState(null);
     const [loading, setLoading] = useState(true);
 
-    // ==========================================
-    // GET DASHBOARD DATA
-    // ==========================================
-
     const getDashboard = async () => {
         try {
             const token = sessionStorage.getItem("token");
-
-            const res = await axios.get(
-                `${import.meta.env.VITE_URL}/api/v1/dashboard`,
-                {
+            const res = await axios.get(`${import.meta.env.VITE_URL}/api/v1/dashboard`,{
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -42,14 +24,9 @@ const DashboardHome = () => {
             if (res.data.success) {
                 setDashboardData(res.data.dashboard);
             }
-
         } catch (error) {
             console.error("Dashboard error:", error);
-
-            toast.error(
-                error.response?.data?.message ||
-                "Failed to fetch dashboard"
-            );
+            toast.error(error.response?.data?.message || "Failed to fetch dashboard" );
         } finally {
             setLoading(false);
         }
@@ -59,13 +36,9 @@ const DashboardHome = () => {
         getDashboard();
     }, []);
 
-    // ==========================================
-    // LOADING
-    // ==========================================
-
     if (loading) {
         return (
-            <div className="flex justify-center items-center min-h-[400px]">
+            <div className="flex justify-center items-center min-h-100">
                 <p className="text-lg font-semibold text-gray-500">
                     Loading dashboard...
                 </p>
@@ -73,19 +46,9 @@ const DashboardHome = () => {
         );
     }
 
-    // ==========================================
-    // DATA
-    // ==========================================
-
     const role = dashboardData?.role?.toLowerCase();
-
     const stats = dashboardData?.stats || {};
-
     const recentOrders = dashboardData?.recentOrders || [];
-
-    // ==========================================
-    // ADMIN STATS
-    // ==========================================
 
     const adminStats = [
         {
@@ -120,10 +83,6 @@ const DashboardHome = () => {
         },
     ];
 
-    // ==========================================
-    // RESTAURANT STATS
-    // ==========================================
-
     const restaurantStats = [
         {
             title: "Total Products",
@@ -152,10 +111,6 @@ const DashboardHome = () => {
         },
     ];
 
-    // ==========================================
-    // USER STATS
-    // ==========================================
-
     const userStats = [
         {
             title: "My Orders",
@@ -179,10 +134,6 @@ const DashboardHome = () => {
         },
     ];
 
-    // ==========================================
-    // SELECT STATS BASED ON ROLE
-    // ==========================================
-
     let roleStats = [];
 
     if (role === "admin") {
@@ -193,12 +144,7 @@ const DashboardHome = () => {
         roleStats = userStats;
     }
 
-    // ==========================================
-    // QUICK ACTIONS
-    // ==========================================
-
     const getQuickActions = () => {
-
         if (role === "admin") {
             return [
                 {
@@ -264,337 +210,161 @@ const DashboardHome = () => {
     };
 
     const quickActions = getQuickActions();
-
-    // ==========================================
-    // ROLE TITLE
-    // ==========================================
-
-    const dashboardTitle =
-        role === "admin"
-            ? "Admin Dashboard"
-            : role === "restaurant"
-                ? "Restaurant Dashboard"
-                : "Customer Dashboard";
+    const dashboardTitle = role === "admin" ? "Admin Dashboard": role === "restaurant"
+                ? "Restaurant Dashboard" : "Customer Dashboard";
 
     const dashboardDescription =
-        role === "admin"
-            ? "Manage users, restaurants, products and orders."
-            : role === "restaurant"
-                ? "Manage your products and keep track of your orders."
+        role === "admin" ? "Manage users, restaurants, products and orders."
+            : role === "restaurant" ? "Manage your products and keep track of your orders."
                 : "Browse restaurants, manage your cart and track your orders.";
-
-    // ==========================================
-    // UI
-    // ==========================================
 
     return (
         <div className="w-full pt-6">
-
-            {/* ==================================
-                HEADER
-            ================================== */}
-
             <div className="mb-8">
-
-                <h1 className="text-3xl md:text-4xl font-bold text-gray-900">
-                    Dashboard
-                </h1>
-
-                <p className="text-gray-500 mt-2">
-                    Welcome to your {role} dashboard.
-                </p>
+                <h1 className="text-3xl md:text-4xl font-bold text-gray-900"> Dashboard </h1>
+                <p className="text-gray-500 mt-2"> Welcome to your {role} dashboard. </p>
 
             </div>
-
-
-            {/* ==================================
-                STATS
-            ================================== */}
 
             <div
                 className={`grid grid-cols-1 sm:grid-cols-2 gap-5 mb-8 ${
-                    role === "admin"
-                        ? "lg:grid-cols-3"
-                        : "lg:grid-cols-4"
-                }`}
-            >
+                    role === "admin" ? "lg:grid-cols-3" : "lg:grid-cols-4" }`} >
 
                 {roleStats.map((stat) => {
-
                     const Icon = stat.icon;
-
                     return (
-                        <div
-                            key={stat.title}
-                            className="bg-white rounded-xl shadow-sm border border-gray-200 p-5"
-                        >
-
+                        <div key={stat.title} className="bg-white rounded-xl shadow-sm border border-gray-200 p-5" >
                             <div className="flex items-center justify-between">
-
                                 <div>
-
-                                    <p className="text-gray-500 text-sm font-medium">
-                                        {stat.title}
-                                    </p>
-
-                                    <h2 className="text-2xl font-bold mt-2">
-                                        {stat.value}
-                                    </h2>
-
+                                    <p className="text-gray-500 text-sm font-medium"> {stat.title} </p>
+                                    <h2 className="text-2xl font-bold mt-2"> {stat.value} </h2>
                                 </div>
-
                                 <div className="w-12 h-12 rounded-xl bg-[#6D8196] flex items-center justify-center">
-
-                                    <Icon
-                                        size={24}
-                                        className="text-white"
-                                    />
-
+                                    <Icon size={24} className="text-white"/>
                                 </div>
-
                             </div>
-
                         </div>
                     );
                 })}
-
             </div>
 
-
-            {/* ==================================
-                RECENT ORDERS + QUICK ACTIONS
-            ================================== */}
-
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-
-                {/* ==================================
-                    RECENT ORDERS
-                ================================== */}
-
                 <div className="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-200">
-
                     <div className="flex items-center justify-between p-5 border-b">
-
                         <div>
-
-                            <h2 className="text-xl font-bold">
-                                Recent Orders
-                            </h2>
-
-                            <p className="text-sm text-gray-500 mt-1">
-                                Latest order activity
-                            </p>
-
+                            <h2 className="text-xl font-bold"> Recent Orders </h2>
+                            <p className="text-sm text-gray-500 mt-1"> Latest order activity </p>
                         </div>
-
-                        <button
-                            onClick={() =>
-                                navigate("/dashboard/orders")
-                            }
-                            className="flex items-center gap-1 text-[#6D8196] font-semibold cursor-pointer"
-                        >
+                        <button onClick={() => navigate("/dashboard/orders") }
+                            className="flex items-center gap-1 text-[#6D8196] font-semibold cursor-pointer" >
                             View All
                             <ArrowRight size={18} />
                         </button>
-
                     </div>
-
-
                     <div className="overflow-x-auto">
-
                         <table className="w-full">
-
                             <thead>
-
                                 <tr className="bg-[#CBCBCB]">
-
-                                    <th className="px-5 py-4 text-left">
-                                        Order
-                                    </th>
-
-                                    <th className="px-5 py-4 text-left">
-                                        Customer
-                                    </th>
-
-                                    <th className="px-5 py-4 text-left">
-                                        Amount
-                                    </th>
-
-                                    <th className="px-5 py-4 text-left">
-                                        Status
-                                    </th>
-
+                                    <th className="px-5 py-4 text-left"> Order </th>
+                                    <th className="px-5 py-4 text-left"> Customer </th>
+                                    <th className="px-5 py-4 text-left"> Amount </th>
+                                    <th className="px-5 py-4 text-left"> Status </th>
                                 </tr>
-
                             </thead>
-
-
                             <tbody>
-
                                 {recentOrders.length > 0 ? (
-
                                     recentOrders.map((order) => {
-
-                                        const customerName =
-                                            order.userId
+                                        const customerName = order.userId
                                                 ? `${order.userId.firstName || ""} ${order.userId.lastName || ""}`.trim()
                                                 : "-";
-
                                         return (
                                             <tr
                                                 key={order._id}
-                                                className="border-b last:border-b-0 hover:bg-gray-50"
-                                            >
-
+                                                className="border-b last:border-b-0 hover:bg-gray-50">
                                                 <td className="px-5 py-4 font-medium">
                                                     {order.orderId || order._id}
                                                 </td>
-
                                                 <td className="px-5 py-4">
                                                     {customerName}
                                                 </td>
-
                                                 <td className="px-5 py-4">
                                                     ₹{order.totalAmount || 0}
                                                 </td>
-
                                                 <td className="px-5 py-4">
-
                                                     <span className="px-3 py-1 rounded-full text-sm font-medium bg-gray-100">
                                                         {order.status || "-"}
                                                     </span>
-
                                                 </td>
-
                                             </tr>
                                         );
                                     })
-
                                 ) : (
-
                                     <tr>
-
-                                        <td
-                                            colSpan="4"
-                                            className="px-5 py-10 text-center text-gray-500"
-                                        >
+                                        <td colSpan="4"
+                                            className="px-5 py-10 text-center text-gray-500">
                                             No recent orders found
                                         </td>
-
                                     </tr>
-
                                 )}
-
                             </tbody>
-
                         </table>
-
                     </div>
-
                 </div>
 
-
-                {/* ==================================
-                    QUICK ACTIONS
-                ================================== */}
-
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
-
-                    <h2 className="text-xl font-bold">
-                        Quick Actions
-                    </h2>
-
+                    <h2 className="text-xl font-bold"> Quick Actions  </h2>
                     <p className="text-sm text-gray-500 mt-1 mb-5">
                         Quickly access important sections
                     </p>
-
-
                     <div className="space-y-3">
-
                         {quickActions.map((action) => {
-
                             const Icon = action.icon;
-
                             return (
-                                <button
-                                    key={action.title}
+                                <button key={action.title}
                                     onClick={() =>
-                                        navigate(action.path)
-                                    }
-                                    className="w-full flex items-center justify-between p-4 rounded-xl border border-gray-200 hover:bg-[#6D8196] hover:text-white transition cursor-pointer group"
-                                >
-
+                                        navigate(action.path) }
+                                    className="w-full flex items-center justify-between p-4 rounded-xl border border-gray-200 hover:bg-[#6D8196] hover:text-white transition cursor-pointer group" >
                                     <div className="flex items-center gap-3">
-
                                         <div className="w-10 h-10 rounded-lg bg-[#CBCBCB] group-hover:bg-white/20 flex items-center justify-center">
-
                                             <Icon size={20} />
-
                                         </div>
-
                                         <span className="font-semibold">
                                             {action.title}
                                         </span>
-
                                     </div>
-
                                     <ArrowRight size={18} />
-
                                 </button>
                             );
-
                         })}
-
                     </div>
-
                 </div>
-
             </div>
 
-
-            {/* ==================================
-                ROLE INFORMATION
-            ================================== */}
-
             <div className="mt-6 bg-[#6D8196] rounded-xl p-6 text-white">
-
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-
                     <div>
-
                         <h2 className="text-xl font-bold">
                             {dashboardTitle}
                         </h2>
-
                         <p className="text-gray-200 mt-1">
                             {dashboardDescription}
                         </p>
-
                     </div>
-
                     <button
                         onClick={() => {
-
                             if (role === "admin") {
                                 navigate("/dashboard/orders");
-
                             } else if (role === "restaurant") {
                                 navigate("/dashboard/products");
-
                             } else {
                                 navigate("/dashboard/restaurants");
                             }
-
                         }}
-                        className="bg-white text-gray-800 px-5 py-3 rounded-lg font-semibold cursor-pointer hover:bg-gray-100"
-                    >
+                        className="bg-white text-gray-800 px-5 py-3 rounded-lg font-semibold cursor-pointer hover:bg-gray-100">
                         Get Started
                     </button>
-
                 </div>
-
             </div>
-
         </div>
     );
 };

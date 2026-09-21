@@ -3,8 +3,8 @@ import Order from "../models/order.js";
 import User from "../models/user.js";
 import Product from "../models/product.js";
 import Cart from "../models/cart.js";
-import {STATUS_CODE, USERTYPE, staticMessages,} from "../utils/constant.js";
-import { errorResponse, successResponse} from "../utils/response.js";
+import { STATUS_CODE, USERTYPE, staticMessages, } from "../utils/constant.js";
+import { errorResponse, successResponse } from "../utils/response.js";
 
 export const getDashboard = async (req, res) => {
     try {
@@ -21,7 +21,7 @@ export const getDashboard = async (req, res) => {
                 dashboardData = await getUserDashboard(user);
                 break;
             default:
-                return res.status(STATUS_CODE.BAD_REQUEST).json(errorResponse(STATUS_CODE.BAD_REQUEST,"Invalid user role")
+                return res.status(STATUS_CODE.BAD_REQUEST).json(errorResponse(STATUS_CODE.BAD_REQUEST, "Invalid user role")
                 );
         }
 
@@ -77,8 +77,8 @@ const getAdminDashboard = async (user) => {
     // -----------------------------
 
     const totalProducts = await Product.countDocuments();
-    console.log("totalProducts",totalProducts);
-    
+    console.log("totalProducts", totalProducts);
+
 
 
     // -----------------------------
@@ -184,7 +184,21 @@ const getRestaurantDashboard = async (user) => {
 
 
     if (!restaurant) {
-        throw new Error("Restaurant not found");
+        return {
+            role: USERTYPE.RESTAURANT,
+
+            restaurant: null,
+
+            stats: {
+                totalProducts: 0,
+                totalOrders: 0,
+                pendingOrders: 0,
+                completedOrders: 0,
+                todayRevenue: 0,
+            },
+
+            recentOrders: [],
+        };
     }
 
 

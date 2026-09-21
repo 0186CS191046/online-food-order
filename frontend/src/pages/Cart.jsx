@@ -245,7 +245,7 @@ const Cart = () => {
                                             onClick={() =>
                                                 navigate("/address")
                                             }
-                                            className="w-full bg-green-600 hover:bg-green-700 cursor-pointer"
+                                            className="w-full bg-[#6D8196] hover:bg-[#4A4A4A] cursor-pointer"
                                         >
                                             PLACE ORDER
                                         </Button>

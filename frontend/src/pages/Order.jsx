@@ -1,10 +1,9 @@
 import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import { Eye, X } from "lucide-react";
-import Sidebar from "@/components/Sidebar";
 import FiltersideBar from "@/components/FiltersideBar";
 import Spinner from "../components/Spinner";
-import { jwtDecode } from "jwt-decode";
+import { useSelector } from "react-redux";
 
 const Order = () => {
     const [orders, setOrders] = useState([]);
@@ -14,7 +13,7 @@ const Order = () => {
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
     const token = sessionStorage.getItem("token");
-    const user = jwtDecode(token);
+    const {user} = useSelector((store)=>store.user)
 
     const role = user.role
     const isAdmin = role === "Admin"
@@ -32,6 +31,8 @@ const Order = () => {
             } else {
                 endpoint = "/api/v1/orders/my-orders";
             }
+            console.log("endpointendpoint",endpoint);
+            
             const res = await axios.get(
                 `${import.meta.env.VITE_URL}${endpoint}`,
                 {
@@ -171,7 +172,7 @@ const Order = () => {
     const handleStatusChange = async (orderId, status) => {
         try {
             const res = await axios.patch(
-                `${import.meta.env.VITE_URL}/api/v1/orders/admin/${orderId}/status`, { status, },
+                `${import.meta.env.VITE_URL}/api/v1/orders/${orderId}/status`, { status, },
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,

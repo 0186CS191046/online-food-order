@@ -7,7 +7,7 @@ import axios from "axios";
 import { useDispatch } from "react-redux";
 import { setCart } from "@/redux/productSlice";
 import { useNavigate } from "react-router-dom";
-import { jwtDecode } from "jwt-decode";
+import { useSelector } from "react-redux";
 
 const ProductCard = ({ product, loading }) => {
     const {
@@ -18,22 +18,42 @@ const ProductCard = ({ product, loading }) => {
         _id
     } = product;
 
-    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const token = sessionStorage.getItem("token");
+    const dispatch = useDispatch();
 
-    let role = null;
+const handleAddToCart = async () => {
+    try {
+        const res = await axios.post(
+            `${import.meta.env.VITE_URL}/api/v1/cart`,
+            {
+                productId: product._id,
+            },
+            {
+                headers: {
+                    Authorization: `Bearer ${sessionStorage.getItem("token")}`,
+                },
+            }
+        );
 
-    if (token) {
-        try {
-            const decodedToken = jwtDecode(token);
-            role = decodedToken?.role;
-        } catch (error) {
-            console.error("Invalid token:", error);
+        if (res.data.success) {
+            dispatch(setCart(res.data.cart));
+
+            toast.success("Product added to cart");
         }
-    }
+    } catch (error) {
+        console.log("Error adding to cart:", error);
 
+        toast.error(
+            error.response?.data?.message || "Failed to add product"
+        );
+    }
+};
+
+
+        const {user} = useSelector((store)=>store.user)
+         
     const addToCart = async (productId) => {
         try {
             const res = await axios.post(
@@ -47,6 +67,8 @@ const ProductCard = ({ product, loading }) => {
             );
 
             if (res.data.success) {
+                console.log("res.data",res.data);
+                
                 toast.success(res.data.message);
                 dispatch(setCart(res.data.cart));
             }
@@ -107,7 +129,7 @@ const ProductCard = ({ product, loading }) => {
                     </h2>
 
                     {/* Normal User */}
-                    {role === "User" && (
+                    {user.role === "User" && (
                         <Button
                             className="bg-[#6D8196] mb-3 w-full cursor-pointer"
                             onClick={() => addToCart(_id)}
@@ -118,7 +140,7 @@ const ProductCard = ({ product, loading }) => {
                     )}
 
                     {/* Restaurant User */}
-                    {role === "Restaurant User" && (
+                    {user.role === "Restaurant" && (
                         <Button
                             className="bg-[#6D8196] mb-3 w-full cursor-pointer"
                             onClick={handleEditProduct}
