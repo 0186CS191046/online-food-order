@@ -39,12 +39,12 @@ const ProductImg = ({ images = [] }) => {
       </div>
 
       {/* Main Image */}
-      <div className="w-full max-w-[500px]">
+      <div className="w-full max-w-125">
         <Zoom>
           <img
             src={img || validImages[0]}
             alt="Product"
-            className="w-full h-[500px] object-cover border shadow-lg rounded"
+            className="w-full h-125 object-cover border shadow-lg rounded"
           />
         </Zoom>
       </div>

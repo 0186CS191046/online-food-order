@@ -5,12 +5,15 @@ import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
+import ChangePasswordDialog from "./ChangePassword";
+import { useState } from "react";
 
 const ProfilePopup = ({ onClose }) => {
     const token = sessionStorage.getItem("token");
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const [changePasswordOpen, setChangePasswordOpen] = useState(false);
 
     // const { user } = useSelector((store) => store.user);
     const user = jwtDecode(token)
@@ -86,6 +89,7 @@ const ProfilePopup = ({ onClose }) => {
     };
 
     return (
+        <>
         <div className="absolute right-0 top-14 w-44 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
             <ul className="py-2">
                 <li
@@ -104,12 +108,19 @@ const ProfilePopup = ({ onClose }) => {
 
                 <li
                     className="px-4 py-2 text-sm hover:bg-gray-100 cursor-pointer"
-                    onClick={onClose}
+                    onClick={() => setChangePasswordOpen(true)}
                 >
-                    Reset Password
+                    Change Password
                 </li>
             </ul>
         </div>
+        <ChangePasswordDialog
+    open={changePasswordOpen}
+    onOpenChange={setChangePasswordOpen}
+/>
+</>
+
+        
     );
 };
 

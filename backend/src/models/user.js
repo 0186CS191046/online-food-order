@@ -1,5 +1,6 @@
 import { Schema, model } from "mongoose";
 import { USERTYPE } from "../utils/constant.js";
+import { type } from "os";
 
 const userSchema = new Schema({
     firstName: { type: String, required: true },
@@ -34,7 +35,7 @@ const userSchema = new Schema({
     city: {
         type: String
     },
-    zipcode: {
+    zipCode: {
         type: Number
     },
     state: {
@@ -42,6 +43,12 @@ const userSchema = new Schema({
     },
     country: {
         type: String
+    },
+    resetPasswordToken : {
+        type:String
+    },
+    resetPasswordExpires : {
+        type:Date
     }
 }, { timestamps: true })
 

@@ -182,6 +182,16 @@ const Signin = () => {
                                 SignUp
                             </Link>
                         </p>
+<p className="text-gray-700 text-sm">
+    Have you forgotten your password?{" "}
+    <Link
+        to="/forgot-password"
+        className="hover:underline cursor-pointer text-green-800"
+    >
+        Forgot Password
+    </Link>
+</p>
+
 
                     </CardFooter>
                 </form>

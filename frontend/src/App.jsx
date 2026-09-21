@@ -1,5 +1,6 @@
 import React from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import ResetPassword from "./components/ResetPassword";
 
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
@@ -20,6 +21,8 @@ import AddressForm from "./pages/AddressForm";
 import OrderSucces from "./pages/OrderSuccess";
 import AddProduct from "./pages/admin/AddProduct";
 import SingleProduct from "./pages/SingleProduct";
+import AddRestaurant from "./pages/AddRestaurant";
+import ForgotPassword from "./pages/ForgotPassword";
 
 const router = createBrowserRouter([
   // =========================
@@ -67,6 +70,10 @@ const router = createBrowserRouter([
         element: <SingleProduct />,
       },
       {
+        path: "add-restaurant",
+        element: < AddRestaurant />,
+      },
+      {
         path: "users",
         element: <Users />,
       },
@@ -108,7 +115,15 @@ const router = createBrowserRouter([
       </ProtectedRoutes>
     ),
   },
-
+{
+    path: "/forgot-password",
+    element: (
+      
+        <>
+          <ForgotPassword />
+        </>
+    ),
+  },
   {
     path: "/profile/:id",
     element: (
@@ -118,6 +133,14 @@ const router = createBrowserRouter([
           <Profile />
         </>
       </ProtectedRoutes>
+    ),
+  },
+  {
+    path: "/reset-password/:token",
+    element: (
+        <>
+          <ResetPassword/>
+        </>
     ),
   },
 

@@ -156,10 +156,6 @@ const AddressForm = () => {
                         toast.info("Payment cancelled");
                     },
                 },
-                theme: {
-                    color: "#16a34a",
-                },
-
                 prefill: {
                     name: selectedAddress?.fullName,
                     email: selectedAddress?.email,

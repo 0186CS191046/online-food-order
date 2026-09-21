@@ -29,6 +29,12 @@ const staticMessages =  {
     TOKEN_MISSING : "Token is missing!",
     TOKEN_EXPIRED : "Token is expired!",
     TOKEN_VERIFICATION_FAILED : "Token verification failed!",
+    ALREADY_EXISTS : "User already exists!",
+    PASSWORD_NOT_MATCHED : "Password didn't matched",
+    PASSWORD_CHANGED_SUCCESS : "Password changed successfully!",
+    RESET_SUCCESS : "Password reset successfully!",
+    PASSWORD_RESET_LINK : "Password reset link sent to your email",
+    INVALID_OR_EXPIRED : "Invalid or expired reset token",
 
     USER_CREATE : "User created successfully!",
     USER_UPDATE : "User updated successfully!",

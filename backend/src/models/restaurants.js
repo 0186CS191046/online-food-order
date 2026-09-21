@@ -3,7 +3,15 @@ import { Schema, model } from "mongoose";
 const restaurantSchema = new Schema({
     owner: { type: Schema.Types.ObjectId, ref:"User" ,required:true},
     restaurantName: { type: String, required: true },
+    email : {
+        type: String,
+        required:true
+    },
     phone : {
+        type: String,
+        required:true
+    },
+    category : {
         type: String,
         required:true
     },
@@ -15,7 +23,7 @@ const restaurantSchema = new Schema({
         type: String,
         required:true
     },
-    zipcode: {
+    zipCode: {
         type: Number,
         required:true
     },
@@ -30,6 +38,18 @@ const restaurantSchema = new Schema({
     status:{
         type: Boolean,
         default:true
+    },
+    description : {
+         type: String
+    },
+    startTime : {
+        type:String
+    },
+    endTime : {
+        type:String
+    },
+    images : {
+        type:[String]
     }
 }, { timestamps: true })
 

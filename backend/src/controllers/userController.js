@@ -8,7 +8,9 @@ import { staticMessages, STATUS_CODE, USERTYPE } from "../utils/constant.js"
 export const getAllUsers = async (req, res) => {
     try {
         const allusers = await User.find();
-        return res.status(STATUS_CODE.SUCCESS).json(successResponse(STATUS_CODE.SUCCESS, staticMessages.FOUND, { users: allusers }))
+        const users = allusers.filter((user)=> user._id != req.authUser.id );
+
+        return res.status(STATUS_CODE.SUCCESS).json(successResponse(STATUS_CODE.SUCCESS, staticMessages.FOUND, { users }))
     } catch (error) {
         console.log("Error getting all users :", error.message);
         return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json(errorResponse(STATUS_CODE.INTERNAL_SERVER_ERROR, staticMessages.INTERNAL_SERVER_ERROR));
@@ -45,36 +47,11 @@ export const getSelfUser = async (req, res) => {
 
 export const updateUser = async (req, res) => {
     try {
-        const { firstName, lastName, phone, address, city, zipcode, role } = req.body;
+        const { firstName, lastName, phone, address, city, zipCode, role, profilePicUrl } = req.body;
 
         let user = await User.findById(req.authUser.id);
         if (!user) {
             return res.status(STATUS_CODE.BAD_REQUEST).json(errorResponse(STATUS_CODE.BAD_REQUEST, staticMessages.NOT_FOUND));
-        }
-
-        let profilePicUrl = user.profilePic;
-        let profilePicPublicId = user.profilePicPublicId;
-
-        if (req.file) {
-            if (profilePicPublicId) {
-                await cloudinary.uploader.destroy(profilePicPublicId)
-            }
-
-            const uploadResult = await new Promise((res, rej) => {
-                const stream = cloudinary.uploader.upload_stream({
-                    folder: "profiles"
-                },
-                    (error, result) => {
-                        if (error) rej(error);
-                        else { res(result) }
-                    }
-                );
-
-                stream.end(req.file.buffer);
-            })
-            profilePicUrl = uploadResult.secure_url;
-            profilePicPublicId = uploadResult.public_id
-
         }
 
         user.firstName = firstName || user.firstName;
@@ -82,9 +59,8 @@ export const updateUser = async (req, res) => {
         user.phone = phone || user.phone;
         user.address = address || user.address;
         user.city = city || user.city;
-        user.zipcode = zipcode || user.zipcode;
+        user.zipCode = zipCode || user.zipCode;
         user.profilePic = profilePicUrl;
-        user.profilePicPublicId = profilePicPublicId;
         user.role = role
 
         const updatedUser = await user.save();

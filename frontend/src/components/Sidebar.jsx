@@ -30,7 +30,7 @@ const Sidebar = () => {
             name: "Restaurants",
             path: "/dashboard/restaurants",
             icon: PackagePlus,
-            roles: ["Admin", "User"],
+            roles: ["Admin", "User", "Restaurant"],
         },
         {
             name: "Products",

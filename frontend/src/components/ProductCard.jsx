@@ -1,6 +1,6 @@
 import React from "react";
 import { Button } from "./ui/button";
-import { ShoppingCart } from "lucide-react";
+import { ShoppingCart, Pencil } from "lucide-react";
 import { Skeleton } from "./ui/skeleton";
 import { toast } from "sonner";
 import axios from "axios";
@@ -17,8 +17,6 @@ const ProductCard = ({ product, loading }) => {
         price,
         _id
     } = product;
-    console.log("product",product);
-    
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -62,15 +60,22 @@ const ProductCard = ({ product, loading }) => {
         }
     };
 
+    const handleEditProduct = () => {
+        navigate(`/dashboard/product/edit/${_id}`);
+    };
+
     return (
         <div className="shadow-lg rounded-lg overflow-hidden h-max">
+
             {/* Product Image */}
             <div className="w-full aspect-square overflow-hidden">
                 {loading ? (
                     <Skeleton className="w-full h-full rounded-lg" />
                 ) : (
                     <img
-                        onClick={() => navigate(`/dashboard/product/${_id}`)}
+                        onClick={() =>
+                            navigate(`/dashboard/product/${_id}`)
+                        }
                         src={productImg?.[0]}
                         alt={productName}
                         className="w-full h-full object-cover transition-transform duration-300 hover:scale-105 cursor-pointer"
@@ -87,7 +92,8 @@ const ProductCard = ({ product, loading }) => {
                     <Skeleton className="w-full h-10" />
                 </div>
             ) : (
-                <div className="px-2">
+                <div className="px-2 py-2">
+
                     <h2 className="font-semibold h-7 line-clamp-2">
                         {productName}
                     </h2>
@@ -100,7 +106,7 @@ const ProductCard = ({ product, loading }) => {
                         ₹{price}
                     </h2>
 
-                    {/* Only User can add to cart */}
+                    {/* Normal User */}
                     {role === "User" && (
                         <Button
                             className="bg-[#6D8196] mb-3 w-full cursor-pointer"
@@ -110,6 +116,18 @@ const ProductCard = ({ product, loading }) => {
                             Add to Cart
                         </Button>
                     )}
+
+                    {/* Restaurant User */}
+                    {role === "Restaurant User" && (
+                        <Button
+                            className="bg-[#6D8196] mb-3 w-full cursor-pointer"
+                            onClick={handleEditProduct}
+                        >
+                            <Pencil />
+                            Edit Product
+                        </Button>
+                    )}
+
                 </div>
             )}
         </div>

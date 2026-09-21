@@ -13,7 +13,8 @@ const config = {
     cloud_api_key : process.env.CLOUD_API_KEY,
     cloud_api_secret : process.env.CLOUD_API_SECRET,
     razorpay_api_key : process.env.RAZORPAY_API_KEY,
-    razorpay_api_secret : process.env.RAZORPAY_API_SECRET
+    razorpay_api_secret : process.env.RAZORPAY_API_SECRET,
+    frontend_url : process.env.FRONTEND_URL
 }
 
 export default config;
