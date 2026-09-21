@@ -33,7 +33,7 @@ const UserInfo = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         const formData = new FormData();
-        const accessToken = localStorage.getItem("token");
+        const accessToken = sessionStorage.getItem("token");
         try {
             formData.append("firstName", updateUser.firstName);
             formData.append("lastName", updateUser.lastName);
@@ -47,7 +47,7 @@ const UserInfo = () => {
                 formData.append("file", file); //image file for backend multer
             }
 
-            const resp = await axios.put(`${import.meta.env.VITE_URL}/api/v1/user/${userId}`, formData, {
+            const resp = await axios.put(`${import.meta.env.VITE_URL}/api/v1/user`, formData, {
                 headers: {
                     Authorization: `Bearer ${accessToken}`,
                     "Content-Type": "multipart/form-data"

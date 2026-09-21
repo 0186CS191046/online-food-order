@@ -14,7 +14,7 @@ export const addProduct = async (req, res) => {
         }
 
         const newproduct = await Product.create({
-            restaurantId, productName, productDesc, price, category,
+            restaurantId, productName, productDesc, price:Number(price), category,
             productImg,
             owner: userId
         });
@@ -86,3 +86,20 @@ export const getAllProducts = async (req, res) => {
         return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json(errorResponse(STATUS_CODE.INTERNAL_SERVER_ERROR, staticMessages.INTERNAL_SERVER_ERROR))
     }
 };
+
+
+export const getProductById = async(req,res) => {
+    try {
+        const {productId} = req.params;
+        if(!productId){
+            return res.status(STATUS_CODE.BAD_REQUEST).json(errorResponse(STATUS_CODE.BAD_REQUEST, staticMessages.MISSING_REQUIRED_FIELDS))
+        }
+         const product = await Product.findOne({_id:productId});
+        return res.status(STATUS_CODE.SUCCESS).json(successResponse(STATUS_CODE.SUCCESS, staticMessages.FOUND, {product}))
+    } catch (error) {
+        console.log(error);
+        
+        return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json(errorResponse(STATUS_CODE.INTERNAL_SERVER_ERROR, staticMessages.INTERNAL_SERVER_ERROR))
+
+    }
+}

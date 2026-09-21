@@ -37,7 +37,7 @@ const AdminSignin = () => {
             })
             if (response.data.success) {
                 navigate("/");
-                localStorage.setItem("token", response.data.accessToken)
+                sessionStorage.setItem("token", response.data.accessToken)
                 toast.success(response.data.message)
             }
         } catch (error) {

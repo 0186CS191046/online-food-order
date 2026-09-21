@@ -11,7 +11,7 @@ const ShowUserOrders = () => {
     const { userId } = useParams();
 
     const getUserOrders = async () => {
-        const token = localStorage.getItem("token")
+        const token = sessionStorage.getItem("token")
         try {
             const resp = await axios.get(`${import.meta.env.VITE_URL}/api/v1/orders/user-order/${userId}`, {
                 headers: {

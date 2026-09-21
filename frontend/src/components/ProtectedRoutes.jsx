@@ -1,62 +1,83 @@
 import React, { useEffect, useState } from "react";
-import { useSelector } from "react-redux";
 import { Navigate, useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
 import axios from "axios";
 
 const ProtectedRoutes = ({ adminOnly, children }) => {
-    const token = localStorage.getItem("token");
     const navigate = useNavigate();
-    const [loading, setLoading] = useState(true);
 
-    const { user } = useSelector(store => store.user);
+    const [loading, setLoading] = useState(true);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [role, setRole] = useState(null);
 
     useEffect(() => {
         const verifyToken = async () => {
             try {
+                let token = sessionStorage.getItem("token");
+
                 if (!token) {
-                    return navigate("/login");
+                    navigate("/", { replace: true });
+                    return;
                 }
 
-                const decodedToken = jwtDecode(token);
-                const isExpired = decodedToken.exp * 1000 < Date.now();
+                let decodedToken = jwtDecode(token);
 
-                // ✅ If token expired → call refresh API
+                const isExpired =
+                    decodedToken?.exp * 1000 < Date.now();
+
                 if (isExpired) {
                     try {
                         const resp = await axios.get(
                             `${import.meta.env.VITE_URL}/api/v1/access-token`,
-                            { withCredentials: true } // refresh token from cookie
+                            {
+                                withCredentials: true,
+                            }
                         );
 
                         const newToken = resp.data.accessToken;
 
-                        // save new token
-                        localStorage.setItem("token", newToken);
-                    } catch (err) {
-                        // ❌ refresh token also expired
-                        localStorage.removeItem("token");
-                        return navigate("/login");
+                        if (!newToken) {
+                            throw new Error("New access token not received");
+                        }
+
+                        sessionStorage.setItem("token", newToken);
+
+                        token = newToken;
+                        decodedToken = jwtDecode(newToken);
+                    } catch (error) {
+                        console.error("Refresh token error:", error);
+
+                        sessionStorage.removeItem("token");
+                        navigate("/", { replace: true });
+                        return;
                     }
                 }
+
+                setRole(decodedToken?.role);
+                setIsAuthenticated(true);
                 setLoading(false);
+
             } catch (error) {
-                console.error("Token error:", error.message);
-                navigate("/login");
+                console.error("Token verification error:", error);
+
+                sessionStorage.removeItem("token");
+                navigate("/", { replace: true });
             }
         };
 
         verifyToken();
-    }, [token, navigate]);
+    }, [navigate]);
 
-    if (loading) return <p>Loading...</p>;
-
-    if (!user) {
-        return <Navigate to="/login" />;
+    if (loading) {
+        return <p>Loading...</p>;
     }
 
-    if (adminOnly && user.role !== "admin") {
-        return <Navigate to="/" />;
+    if (!isAuthenticated) {
+        return <Navigate to="/" replace />;
+    }
+
+    if (adminOnly && role?.toLowerCase() !== "admin") {
+        return <Navigate to="/" replace />;
     }
 
     return children;

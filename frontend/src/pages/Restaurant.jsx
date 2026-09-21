@@ -1,58 +1,103 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "sonner";
-import Sidebar from "@/components/Sidebar";
 import FiltersideBar from "@/components/FiltersideBar";
+import { jwtDecode } from "jwt-decode";
+import { useNavigate } from "react-router-dom";
 
 const Restaurants = () => {
     const [restaurants, setRestaurants] = useState([]);
-    const token = sessionStorage.getItem("token");
+    const [loading, setLoading] = useState(true);
 
-    const getAllRestaurants = async () => {
+    const token = sessionStorage.getItem("token");
+    const navigate = useNavigate();
+
+    let user = null;
+
+    if (token) {
         try {
-            const res = await axios.get(
-                `${import.meta.env.VITE_URL}/api/v1/restaurant/all`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+            user = jwtDecode(token);
+        } catch (error) {
+            console.error("Invalid token:", error);
+        }
+    }
+
+    const getRestaurants = async () => {
+        try {
+            setLoading(true);
+
+            const isRestaurantUser = user?.role === "Restaurant";
+
+            const url = isRestaurantUser
+                ? `${import.meta.env.VITE_URL}/api/v1/restaurant`
+                : `${import.meta.env.VITE_URL}/api/v1/restaurant/all`;
+
+            const res = await axios.get(url, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
+
+            console.log("Restaurant response:", res.data);
 
             if (res.data.success) {
-                setRestaurants(res.data.restaurants);
+                setRestaurants(res.data.restaurants || []);
+            } else {
+                setRestaurants([]);
             }
         } catch (error) {
-            console.log("Error in get all restaurants:", error.message);
+            console.log(
+                "Error in get restaurants:",
+                error.response?.data || error.message
+            );
+
+            setRestaurants([]);
 
             toast.error(
-                error.response?.data?.message || "Failed to fetch restaurants"
+                error.response?.data?.message ||
+                "Failed to fetch restaurants"
             );
+        } finally {
+            setLoading(false);
         }
     };
 
     useEffect(() => {
-        getAllRestaurants();
+        if (token && user) {
+            getRestaurants();
+        }
     }, []);
 
     return (
-        <div className="pt-20 min-h-screen">
+        <div className="min-h-screen">
             <div className="flex">
-
-                {/* Sidebar */}
-                <Sidebar />
-
-                {/* Main Content */}
                 <div className="flex-1 min-w-0 p-2">
-                     <FiltersideBar allProducts={restaurants} setCategory={"hyy"} category={"jj"} search={"jj"} setSearch={"jj"} />
 
-                    <div className="mb-6">
+                    <FiltersideBar
+                        allProducts={restaurants}
+                        setCategory={"hyy"}
+                        category={"jj"}
+                        search={"jj"}
+                        setSearch={"jj"}
+                    />
+
+                    <div className="flex items-center justify-between mb-6">
                         <h1 className="text-3xl font-bold">
-                               Restaurants
+                            Restaurants
                         </h1>
+
+                        {user?.role === "Restaurant" && (
+                            <button
+                                onClick={() =>
+                                    navigate("/dashboard/add-restaurant")
+                                }
+                                className="bg-[#6D8196] text-white px-5 py-2.5 rounded-md hover:opacity-90 transition cursor-pointer"
+                            >
+                                Add Restaurant
+                            </button>
+                        )}
                     </div>
 
-                    {/* Table */}
                     <div className="overflow-x-auto bg-white rounded-lg shadow">
                         <table className="w-full border-collapse">
 
@@ -77,12 +122,15 @@ const Restaurants = () => {
                                     <th className="px-6 py-4 text-left">
                                         ZipCode
                                     </th>
-                                     <th className="px-6 py-4 text-left">
+
+                                    <th className="px-6 py-4 text-left">
                                         State
                                     </th>
-                                     <th className="px-6 py-4 text-left">
+
+                                    <th className="px-6 py-4 text-left">
                                         Country
                                     </th>
+
                                     <th className="px-6 py-4 text-left">
                                         Status
                                     </th>
@@ -90,7 +138,16 @@ const Restaurants = () => {
                             </thead>
 
                             <tbody>
-                                {restaurants.length > 0 ? (
+                                {loading ? (
+                                    <tr>
+                                        <td
+                                            colSpan="8"
+                                            className="px-6 py-10 text-center text-gray-500"
+                                        >
+                                            Loading restaurants...
+                                        </td>
+                                    </tr>
+                                ) : restaurants.length > 0 ? (
                                     restaurants.map((restaurant, index) => (
                                         <tr
                                             key={restaurant._id}
@@ -105,7 +162,7 @@ const Restaurants = () => {
                                             </td>
 
                                             <td className="px-6 py-4">
-                                                {restaurant.address || "N/A"} 
+                                                {restaurant.address || "N/A"}
                                             </td>
 
                                             <td className="px-6 py-4">
@@ -113,23 +170,28 @@ const Restaurants = () => {
                                             </td>
 
                                             <td className="px-6 py-4">
-                                                {restaurant.zipcode || "N/A"}
+                                                {restaurant.zipCode || "N/A"}
                                             </td>
+
                                             <td className="px-6 py-4">
                                                 {restaurant.state || "N/A"}
                                             </td>
+
                                             <td className="px-6 py-4">
                                                 {restaurant.country || "N/A"}
                                             </td>
+
                                             <td className="px-6 py-4">
-                                                {restaurant.status? "Active" : "InActive" }
+                                                {restaurant.status
+                                                    ? "Active"
+                                                    : "Inactive"}
                                             </td>
                                         </tr>
                                     ))
                                 ) : (
                                     <tr>
                                         <td
-                                            colSpan="5"
+                                            colSpan="8"
                                             className="px-6 py-10 text-center text-gray-500"
                                         >
                                             No Restaurants found
@@ -140,7 +202,6 @@ const Restaurants = () => {
 
                         </table>
                     </div>
-
                 </div>
             </div>
         </div>

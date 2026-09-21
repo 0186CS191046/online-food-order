@@ -1,5 +1,6 @@
 import ProductCard from "../components/ProductCard";
 import React, { useEffect, useState } from "react";
+import { useMemo } from "react";
 import {
     Select,
     SelectContent,
@@ -17,7 +18,6 @@ import Sidebar from "@/components/Sidebar";
 
 const Products = () => {
     const [allProducts, setAllProducts] = useState([]);
-    const [priceRange, setpricerange] = useState([0, 999999]);
     const [search, setSearch] = useState("");
     const [category, setCategory] = useState("All");
 
@@ -48,54 +48,44 @@ const Products = () => {
     };
 
     useEffect(() => {
-        if (!allProducts || allProducts.length === 0) {
-            dispatch(setProducts([]));
-            return;
-        }
-
-        let filtered = [...allProducts];
-
-        if (search.trim() !== "") {
-            filtered = filtered.filter((p) =>
-                p?.productName
-                    ?.toLowerCase()
-                    .includes(search.toLowerCase())
-            );
-        }
-
-        if (category !== "All") {
-            filtered = filtered.filter(
-                (p) => p.category === category
-            );
-        }
-
-        filtered = filtered.filter(
-            (p) =>
-                p.price >= priceRange[0] &&
-                p.price <= priceRange[1]
-        );
-
-        dispatch(setProducts(filtered));
-    }, [search, priceRange, category, allProducts, dispatch]);
-
-    useEffect(() => {
         getAllProducts();
     }, []);
 
+    const filteredProducts = useMemo(() => {
+        let filtered = [...allProducts];
+
+        // Search filter
+        if (search.trim() !== "") {
+            filtered = filtered.filter((product) =>
+                product?.productName
+                    ?.toLowerCase()
+                    .includes(search.trim().toLowerCase())
+            );
+        }
+
+        // Category filter
+        if (category !== "All") {
+            filtered = filtered.filter(
+                (product) => product?.category === category
+            );
+        }
+
+        return filtered;
+    }, [allProducts, search, category]);
+
+    useEffect(() => {
+        dispatch(setProducts(filteredProducts));
+    }, [filteredProducts, dispatch]);
+
+    console.log("search, category, allProducts,", search, category, allProducts,);
+
+
     return (
-        <div className="pt-20 min-h-screen">
-            
-            {/* Sidebar + Main Content */}
+        <div className="min-h-screen">
             <div className="flex">
-
-                {/* Sidebar */}
-                <Sidebar />
-
-                {/* Right Side */}
                 <div className="flex-1 min-w-0">
-
-                    {/* Filters */}
                     <FiltersideBar
+                        type="products"
                         allProducts={allProducts}
                         search={search}
                         setSearch={setSearch}
@@ -103,15 +93,11 @@ const Products = () => {
                         setCategory={setCategory}
                     />
 
-                    {/* Products */}
                     <div className="p-10">
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-7">
-                            {allProducts.map((product) => (
-                                <ProductCard
-                                    key={product._id}
-                                    product={product}
-                                />
-                            ))}
+                            {filteredProducts.length > 0 ? (filteredProducts.map((product) => (
+                                <ProductCard key={product._id} product={product} />
+                            ))): <h2 className="text-center"> No Products found</h2>}
                         </div>
                     </div>
 

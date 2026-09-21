@@ -19,6 +19,7 @@ import axios from "axios";
 import { setCart } from "@/redux/restaurantSlice";
 import { toast } from "sonner";
 import Spinner from "../components/Spinner";
+import { loadCart } from "@/api/cartApi";
 
 const apiURL = `${import.meta.env.VITE_URL}/api/v1`;
 
@@ -27,40 +28,12 @@ const Cart = () => {
         (store) => store.restaurant
     );
     const navigate = useNavigate();
-    const token = localStorage.getItem("token");
+    const token = sessionStorage.getItem("token");
     const dispatch = useDispatch();
-    const [loading, setLoading] = useState(true);
     const subtotal = cart?.totalPrice || 0;
     const shipping = subtotal > 299 ? 0 : 10;
     const tax = subtotal * 0.05;
     const total = subtotal + shipping + tax;
-
-    const loadCart = async () => {
-        try {
-            const res = await axios.get(
-                `${apiURL}/cart`,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
-            );
-            if (res.data.success) {
-                dispatch(setCart(res.data.cart));
-            }
-        } catch (error) {
-            console.log(
-                "Error loading cart:",
-                error.message
-            );
-            toast.error(
-                error.response?.data?.message ||
-                "Failed to load cart!"
-            );
-        } finally {
-            setLoading(false);
-        }
-    };
 
     const handleQuantity = async (
         productId,
@@ -68,7 +41,7 @@ const Cart = () => {
     ) => {
         try {
             const resp = await axios.put(
-                `${apiURL}/cart`,
+                `${apiURL}/cart/update-item`,
                 {
                     productId,
                     type
@@ -126,12 +99,9 @@ const Cart = () => {
     };
 
     useEffect(() => {
-        loadCart();
-    }, []);
+    loadCart(dispatch);
+}, [dispatch]);
 
-    if (loading) {
-        return <Spinner />;
-    }
 
     return (
         <div className="pt-20 bg-gray-50 min-h-screen">
@@ -148,7 +118,7 @@ const Cart = () => {
                                         <div className="flex items-center gap-4">
                                             <img
                                                 src={
-                                                    product?.productId?.productImg?.[0]?.url ||
+                                                    product?.productId?.productImg?.[0] ||
                                                     userLogo
                                                 }
                                                 alt=""

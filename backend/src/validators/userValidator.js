@@ -4,10 +4,13 @@ const putUser = Joi.object({
     firstName: Joi.string().optional(),
     lastName: Joi.string().optional(),
     email: Joi.string().optional(),
-    phone : Joi.string().optional().allow(""),
-    profile_pic: Joi.string().optional()
+    phone: Joi.string().optional().allow(""),
+    profilePic: Joi.string().optional().allow(""),
+    address: Joi.string().optional().allow(""),
+    city: Joi.string().optional().allow(""),
+    zipCode: Joi.string().optional().allow("")
 }, "req.body");
 
 
 
-export {putUser}
+export { putUser }

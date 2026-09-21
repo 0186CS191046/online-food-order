@@ -30,7 +30,7 @@ const Sidebar = () => {
             name: "Restaurants",
             path: "/dashboard/restaurants",
             icon: PackagePlus,
-            roles: ["Admin", "User"],
+            roles: ["Admin", "User", "Restaurant"],
         },
         {
             name: "Products",
@@ -49,6 +49,12 @@ const Sidebar = () => {
             path: "/dashboard/orders",
             icon: FaRegEdit,
             roles: ["Admin", "Restaurant", "User"],
+        },
+        {
+            name: "Add Product",
+            path: "/dashboard/add-product",
+            icon: FaRegEdit,
+            roles: ["Restaurant"],
         },
     ];
 

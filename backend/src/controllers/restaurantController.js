@@ -6,19 +6,21 @@ import { errorResponse, successResponse } from "../utils/response.js";
 
 export const addRestaurant = async (req, res) => {
     try {
-        const { restaurantName, address, city, zipcode, state, country, phone } = req.body;
+        const { restaurantName, email, address, city, zipCode, state, country, phone, images, startTime, endTime, description, category } = req.body;
         const userId = req.authUser.id
 
-        if (!restaurantName || !address || !city || !zipcode || !state || !country || !phone) {
+        if (!restaurantName || !address || !city || !zipCode || !state || !country || !phone) {
             return res.status(STATUS_CODE.BAD_REQUEST).json(errorResponse(STATUS_CODE.BAD_REQUEST, staticMessages.MISSING_REQUIRED_FIELDS))
         }
 
         const newrestaurant = await Restaurant.create({
-            restaurantName, address, city, zipcode, state, owner: userId, country, phone
+            restaurantName, address, city, zipCode, state, owner: userId, country, phone, email, startTime, endTime, images, description, category 
         });
 
         return res.status(STATUS_CODE.CREATED).json(successResponse(STATUS_CODE.CREATED, staticMessages.RESTAURANT_CREATE))
     } catch (error) {
+        console.log("eror",error);
+        
         return res.status(STATUS_CODE.INTERNAL_SERVER_ERROR).json(errorResponse(STATUS_CODE.INTERNAL_SERVER_ERROR, staticMessages.INTERNAL_SERVER_ERROR));
     }
 }
